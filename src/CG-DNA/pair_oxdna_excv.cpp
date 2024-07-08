@@ -163,9 +163,11 @@ void PairOxdnaExcv::compute(int eflag, int vflag)
     int n = alist[in];
     double *qn,nx_temp[3],ny_temp[3],nz_temp[3]; // quaternion and Cartesian unit vectors in lab frame
 
+    // this function takes the lab frame quaternion and returns the Cartesian unit vectors
     qn=bonus[ellipsoid[n]].quat;
     MathExtra::q_to_exyz(qn,nx_temp,ny_temp,nz_temp);
 
+    // those are assigned and stored in the per-atom arrays
     nx[n][0] = nx_temp[0];
     nx[n][1] = nx_temp[1];
     nx[n][2] = nx_temp[2];

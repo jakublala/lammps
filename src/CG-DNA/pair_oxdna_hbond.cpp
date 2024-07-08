@@ -187,13 +187,15 @@ void PairOxdnaHbond::compute(int eflag, int vflag)
 
   for (ia = 0; ia < anum; ia++) {
 
-    a = alist[ia];
-    atype = type[a];
+    a = alist[ia]; // get the nucleotide index
+    atype = type[a]; // get the nucleotide type
 
+    // unit vector h-bonding site a (lab frame)
     ax[0] = nx_xtrct[a][0];
     ax[1] = nx_xtrct[a][1];
     ax[2] = nx_xtrct[a][2];
 
+    // vector COM to h-bonding site a
     ra_chb[0] = d_chb*ax[0];
     ra_chb[1] = d_chb*ax[1];
     ra_chb[2] = d_chb*ax[2];
@@ -201,18 +203,21 @@ void PairOxdnaHbond::compute(int eflag, int vflag)
     blist = firstneigh[a];
     bnum = numneigh[a];
 
+    // loop over neighbors of a
     for (ib = 0; ib < bnum; ib++) {
 
-      b = blist[ib];
+      b = blist[ib]; // get the neighbour index
       factor_lj = special_lj[sbmask(b)]; // = 0 for nearest neighbors
       b &= NEIGHMASK;
 
       btype = type[b];
 
+      // unit vector h-bonding site b (lab frame)
       bx[0] = nx_xtrct[b][0];
       bx[1] = nx_xtrct[b][1];
       bx[2] = nx_xtrct[b][2];
 
+      // vector COM to h-bonding site b
       rb_chb[0] = d_chb*bx[0];
       rb_chb[1] = d_chb*bx[1];
       rb_chb[2] = d_chb*bx[2];
@@ -442,7 +447,7 @@ void PairOxdnaHbond::compute(int eflag, int vflag)
       deltb[1] = 0.0;
       deltb[2] = 0.0;
 
-      // theta1 torque
+      // theta1 torque -> and add it to the torque on the nucleotide a and b
       if (theta1) {
 
         tpair = -f1 * df4t1 * f4t2 * f4t3 * f4t4 * f4t7 * f4t8 * factor_lj;
@@ -522,14 +527,14 @@ void PairOxdnaHbond::compute(int eflag, int vflag)
 
       }
 
-      // increment torques
+      // increment torques -> update the torque on the nucleotide a and b
 
       torque[a][0] += delta[0];
       torque[a][1] += delta[1];
       torque[a][2] += delta[2];
 
       if (newton_pair || b < nlocal) {
-
+        // for torque on nucleotide b, assume Newton's 3rd law and give opposite torque
         torque[b][0] -= deltb[0];
         torque[b][1] -= deltb[1];
         torque[b][2] -= deltb[2];

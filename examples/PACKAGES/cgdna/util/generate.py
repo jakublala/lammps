@@ -129,6 +129,10 @@ bonds = []
 
 """
 Convert local body frame to quaternion DOF
+Same function as in the LAMMPS code (exyz_to_q)
+Input is just two vectors, but the third one is calculated via cross product
+Initial quat is set to [1, 0, 0, 0], but then it's actually overwritten.
+I believe that mya1 is along the x-axis (along the H-bond, i.e. vector n) and mya3 is along the z-axis (along the backbone, i.e. vector b)
 """
 def exyz_to_quat (mya1, mya3):
 
